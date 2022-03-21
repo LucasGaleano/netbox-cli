@@ -1,0 +1,129 @@
+#!/usr/bin/env python3
+
+from json.tool import main
+import pynetbox
+import argparse
+
+
+tokenAPI = ''
+host = ''
+nb = pynetbox.api(host, token=tokenAPI)
+
+
+class searchIP:
+    ips = []
+    tenant = []
+    dnsName = []
+    prefixes = []
+
+    def search(self, IP):
+        self.ips = []
+        self.tenant = []
+        self.dnsName = []
+        self.prefixes = []
+
+        ips = self.search_ip(IP)
+
+        if not ips:
+            self.search_prefixes(IP)
+            self.tenant.append(self.prefixes[0][-1].tenant)
+            self.ips.append(IP)
+            self.dnsName.append('None')
+     
+        for ip in ips:
+            if ip is not None:
+                self.tenant.append(ip.tenant)
+                self.ips.append(ip.address.split('/')[0])
+                self.dnsName.append(ip.dns_name)
+    
+    def show_table(self):
+        for i, ip in enumerate(self.ips):
+            print(f"{ip}".ljust(15), end='\t')
+            print(f"{self.tenant[i]}".ljust(15), end='\t')
+            print(f"{self.dnsName[i]}".ljust(15), end='\t')
+            print()
+
+    def show_prefixes(self):
+        for i, ip in enumerate(self.ips):
+            self.search_prefixes(ip)
+            print('prefix:')
+            for prefix in self.prefixes[i]:
+                print(f"{prefix} {prefix.tenant}")
+
+    def show(self, table = False, prefixes = False):
+        if table:
+            self.show_table()
+        else:
+            for i, ip in enumerate(self.ips):
+                print(f"IP: {ip}")
+                print(f"tenant: {self.tenant[i]}")
+                print(f"DNS: {self.dnsName[i]}")
+                if prefixes:
+                    self.show_prefixes()
+                print()
+
+        
+
+    def search_ip(self, IP):
+        ips = nb.ipam.ip_addresses.filter(address=IP)
+        return [ip for ip in ips]
+
+    def search_prefixes(self, IP):
+        if not self.prefixes:
+            prefixes = nb.ipam.prefixes.filter(q=IP)
+            self.prefixes.append([prefix for prefix in prefixes]) 
+
+
+parser = argparse.ArgumentParser()
+parser.add_argument('ip',type=str, nargs='*', default=[])
+parser.add_argument('--prefix', action='store_true')
+parser.add_argument('--ips', type=argparse.FileType('r'),default=[])
+parser.add_argument('--table', action='store_true')
+
+args = parser.parse_args()
+
+
+def main():
+    search = searchIP()
+    if args.ip or args.ips:
+        for ip in args.ip + [ip for ip in args.ips]:
+            search.search(ip.rstrip())
+            search.show(table=args.table, prefixes=args.prefix)
+
+
+if __name__ == "__main__":
+    main()
+
+# https://ttl255.com/pynetbox-netbox-python-api-client-p1-getting-info/
+"""
+ip.address               ip.has_details
+ip.api                   ip.id
+ip.assigned_object       ip.last_updated
+ip.assigned_object_id    ip.nat_inside
+ip.assigned_object_type  ip.nat_outside
+ip.created               ip.role
+ip.custom_fields         ip.save(
+ip.default_ret(          ip.serialize(
+ip.delete(               ip.status
+ip.description           ip.tags
+ip.display               ip.tenant
+ip.dns_name              ip.update(
+ip.endpoint              ip.updates(
+ip.family                ip.url
+ip.full_details(         ip.vrf
+
+
+prefixes:
+prefix.api                 prefix.family              prefix.site
+prefix.available_ips       prefix.full_details(       prefix.status
+prefix.available_prefixes  prefix.has_details         prefix.tags
+prefix.children            prefix.id                  prefix.tenant
+prefix.created             prefix.is_pool             prefix.update(
+prefix.custom_fields       prefix.last_updated        prefix.updates(
+prefix.default_ret(        prefix.mark_utilized       prefix.url
+prefix.delete(             prefix.prefix              prefix.vlan
+prefix.description         prefix.role                prefix.vrf
+prefix.display             prefix.save(               
+prefix.endpoint            prefix.serialize(          
+
+"""
