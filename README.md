@@ -2,7 +2,8 @@
 
 ## How to install
 
-bash install.sh
+Create and edit the netbox.conf (There is a example file in the repository)
+bash install.sh (This will install the python requirements and it'll move the script to /usr/sbin folder)
 
 ## How to use
 
