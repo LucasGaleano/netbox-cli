@@ -1,10 +1,11 @@
 # netbox-cli
 
-# How to install
+## How to install
 
-bash install.sh
+Create and edit the netbox.conf (There is a example file in the repository)
+bash install.sh (This will install the python requirements and it'll move the script to /usr/sbin folder)
 
-# How to use
+## How to use
 
 Simple use:
 `netbox 2.2.2.2`
@@ -22,5 +23,5 @@ Combine multiple parameters:
 `netbox 2.2.2.2 --ips <list of IPs> --table`
 
 note:
-If there is no tenant on netbox, the script will get the tenant from the last prefix with tenant.
+If there is no tenant on netbox, the script will gets the tenant from the last prefix with tenant.
 --prefix and --table are mutually exclusive.
