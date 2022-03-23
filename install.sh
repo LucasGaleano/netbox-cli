@@ -1,4 +1,8 @@
 pip3 install -r requirements.txt
-sudo cp netbox.conf /usr/sbin/netbox.conf
-sudo cp netbox /usr/sbin/netbox
-sudo chmod +x /usr/sbin/netbox
+sudo chmod +x netbox 
+
+sudo mkdir -p /etc/netbox-cli/
+
+sudo cp netbox.conf /etc/netbox-cli/
+sudo cp netbox /usr/sbin/
+
