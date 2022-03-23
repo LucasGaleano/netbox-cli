@@ -22,5 +22,5 @@ Combine multiple parameters:
 `netbox 2.2.2.2 --ips <list of IPs> --table`
 
 note:
-If there is no tenant on netbox, the script will get the tenant from the last prefix with tenant.
+If there is no tenant on netbox, the script will gets the tenant from the last prefix with tenant.
 --prefix and --table are mutually exclusive.
