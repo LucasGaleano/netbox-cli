@@ -1,0 +1,3 @@
+[netbox]
+host = https://example.net
+token = token
