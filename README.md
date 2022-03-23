@@ -1,10 +1,10 @@
 # netbox-cli
 
-# How to install
+## How to install
 
 bash install.sh
 
-# How to use
+## How to use
 
 Simple use:
 `netbox 2.2.2.2`
