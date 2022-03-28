@@ -42,10 +42,6 @@ class searchIP:
         
     
     def show_table(self):
-        print(f"IP".ljust(15), end='\t')
-        print(f"Tenant".ljust(15), end='\t')
-        print(f"DNS Name".ljust(15), end='\t')
-        print()
         for i, ip in enumerate(self.ips):
             print(f"{ip}".ljust(15), end='\t')
             print(f"{self.tenant[i]}".ljust(15), end='\t')
@@ -95,6 +91,10 @@ args = parser.parse_args()
 def main():
     search = searchIP()
     if args.ip or args.ips:
+        print(f"IP".ljust(15), end='\t')
+        print(f"Tenant".ljust(15), end='\t')
+        print(f"DNS Name".ljust(15), end='\t')
+        print()
         for ip in args.ip + [ip for ip in args.ips]:
             search.search(ip.rstrip())
             search.show(table=args.table, prefixes=args.prefix)
