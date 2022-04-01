@@ -4,6 +4,7 @@ from json.tool import main
 import pynetbox
 import argparse
 import configparser
+import sys
 
 config = configparser.ConfigParser()
 config.read('/etc/netbox-cli/netbox.conf')
@@ -90,13 +91,14 @@ args = parser.parse_args()
 
 def main():
     search = searchIP()
-    if args.ip or args.ips:
+    if args.ip or args.ips or sys.stdin:
         if args.table:
             print(f"IP".ljust(15), end='\t')
             print(f"Tenant".ljust(15), end='\t')
             print(f"DNS Name".ljust(15), end='\t')
             print()
-        for ip in args.ip + [ip for ip in args.ips]:
+
+        for ip in args.ip + [ip for ip in sys.stdin] + [ip for ip in args.ips]:
             search.search(ip.rstrip())
             search.show(table=args.table, prefixes=args.prefix)
 
