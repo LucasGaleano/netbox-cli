@@ -91,14 +91,18 @@ args = parser.parse_args()
 
 def main():
     search = searchIP()
-    if args.ip or args.ips or sys.stdin:
+    stdin = []
+    if not sys.stdin.isatty():
+        stdin = sys.stdin.readlines()
+
+    if args.ip or args.ips or stdin:
         if args.table:
             print(f"IP".ljust(15), end='\t')
             print(f"Tenant".ljust(15), end='\t')
             print(f"DNS Name".ljust(15), end='\t')
             print()
 
-        for ip in args.ip + [ip for ip in sys.stdin] + [ip for ip in args.ips]:
+        for ip in args.ip + [ip for ip in stdin] + [ip for ip in args.ips]:
             search.search(ip.rstrip())
             search.show(table=args.table, prefixes=args.prefix)
 
