@@ -23,6 +23,10 @@ class searchIP:
         self.tenant = []
         self.dnsName = []
         self.prefixes = []
+        self.role = []
+        self.description = []
+        self.assignment = []
+        self.tags = []
 
         ips = self.search_ip(IP)
         if not ips:
@@ -32,21 +36,39 @@ class searchIP:
                 self.tenant.append(lastPrefix.tenant)
             else:
                 self.tenant.append('None')
-            self.ips.append(IP)
-            self.dnsName.append('None')
-     
+    
         for ip in ips:
             if ip is not None:
                 self.tenant.append(ip.tenant)
                 self.ips.append(ip.address.split('/')[0])
                 self.dnsName.append(ip.dns_name)
+                self.role.append(ip.role)
+                description = ip.description if ip.description else 'None'
+                self.description.append(description)
+                self.assignment.append(ip.assigned_object)
+                self.tags.append(ip.tags)
+
         
     
     def show_table(self):
+
+        print(f"IP".ljust(15), end='\t')
+        print(f"Tenant".ljust(15), end='\t')
+        print(f"DNS Name".ljust(15), end='\t')
+        print(f"Role".ljust(15), end='\t')
+        print(f"Description".ljust(15), end='\t')
+        print(f"Assigment".ljust(15), end='\t')
+        print(f"tags".ljust(15), end='\t')
+        print()
+    
         for i, ip in enumerate(self.ips):
             print(f"{ip}".ljust(15), end='\t')
             print(f"{self.tenant[i]}".ljust(15), end='\t')
             print(f"{self.dnsName[i]}".ljust(15), end='\t')
+            print(f"{self.role[i]}".ljust(15), end='\t')
+            print(f"{self.description[i]}".ljust(15), end='\t')            
+            print(f"{self.assignment[i]}".ljust(15), end='\t')
+            print(f"{self.tags[i]}".ljust(15), end='\t')
             print()
 
     def show_prefixes(self):
@@ -64,6 +86,10 @@ class searchIP:
                 print(f"IP: {ip}")
                 print(f"tenant: {self.tenant[i]}")
                 print(f"DNS: {self.dnsName[i]}")
+                print(f"Role: {self.role[i]}")
+                print(f"Description: {self.description[i]}")
+                print(f"Assignment: {self.assignment[i]}")
+                print(f"Tags: {self.tags[i]}")
                 if prefixes:
                     self.show_prefixes()
                 print()
@@ -96,12 +122,6 @@ def main():
         stdin = sys.stdin.readlines()
 
     if args.ip or args.ips or stdin:
-        if args.table:
-            print(f"IP".ljust(15), end='\t')
-            print(f"Tenant".ljust(15), end='\t')
-            print(f"DNS Name".ljust(15), end='\t')
-            print()
-
         for ip in args.ip + [ip for ip in stdin] + [ip for ip in args.ips]:
             search.search(ip.rstrip())
             search.show(table=args.table, prefixes=args.prefix)

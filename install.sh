@@ -3,6 +3,5 @@ sudo chmod +x netbox
 
 sudo mkdir -p /etc/netbox-cli/
 
-sudo cp netbox.conf /etc/netbox-cli/
 sudo cp netbox /usr/sbin/
-
+sudo cp netbox.conf /etc/netbox-cli/
